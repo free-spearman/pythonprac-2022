@@ -10,26 +10,19 @@ def git_branches_show (*branch_name):
         for branch in listdir(PATHGITBRANCHES):
             print(branch)
         return    
-    branch_path = join(PATHGITBRANCHES,branch_name[0])
-    print(branch_path)    
+    
+    branch_path = join(PATHGITBRANCHES,branch_name[0]) 
     with open(branch_path) as f_branch:
         f_text = f_branch.readline()
-    print(f_text)
+    
     f_text = f_text.strip()
     commit_name_dir, commit_name_file = f_text[:2] +'/', f_text[2:]
     commit_file_path = join(PATHGITOBJECTS,commit_name_dir,commit_name_file)
-    print(commit_file_path)
+    
     with open(commit_file_path, 'rb') as obj_file:
         commit = zlib.decompress(obj_file.read()).decode()
+    
     print(commit)
-
-
-
-
-
-
-        
-
 
 
 if ( __name__ == '__main__'):
