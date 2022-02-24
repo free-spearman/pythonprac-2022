@@ -7,6 +7,45 @@ PATH_GIT_OBJECTS = '.git/objects/'
 BYTE_SEP = b'\x00'
 SHIFT = "  "
 
+def git_tree_show_as_tree(tree_name,lvl = 1):
+
+    tree_dir, tree_file = tree_name[:2]+'/', tree_name[2:]
+    tree_file_path = join(PATH_GIT_OBJECTS,tree_dir,tree_file)
+
+    with open(tree_file_path, 'rb') as f_tree:
+        f_text = zlib.decompress(f_tree.read())
+    head, _, tail = f_text.partition(BYTE_SEP)
+    kind, size = head.split()
+    
+    if kind != b'tree':
+        if (lvl < 2):
+            print(f"Это не дерево {tree_name}")
+        return
+    
+    while tail:
+        head, _, tail = tail.partition(b'\x00')
+        tre_mode, tre_name = head.split()
+
+        num, tail = tail[:20], tail[20:]
+        print(f"{SHIFT*lvl}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
+        git_tree_show_as_tree(num.hex(), lvl + 1)
+
+def git_tree_show(tree_name):
+
+    tree_dir, tree_file = tree_name[:2]+'/', tree_name[2:]
+    tree_file_path = join(PATH_GIT_OBJECTS,tree_dir,tree_file)
+
+    with open(tree_file_path, 'rb') as f_tree:
+        f_text = zlib.decompress(f_tree.read())
+    tail = f_text.partition(BYTE_SEP)[-1]
+    
+    while tail:
+        head, _, tail = tail.partition(BYTE_SEP)
+        tre_mode, tre_name = head.split()
+        num, tail = tail[:20], tail[20:]
+        print(f"{SHIFT}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
+
+
 def git_branches_show (*branch_name):
     if not branch_name:
         for branch in listdir(PATHGITBRANCHES):
@@ -31,19 +70,12 @@ def git_branches_show (*branch_name):
     print(commit)
 
     commit_tree_name = commit.split('\n')[0].split('tree')[1].strip()
-    tree_dir, tree_file = commit_tree_name[:2]+'/', commit_tree_name[2:]
-    tree_file_path = join(PATH_GIT_OBJECTS,tree_dir,tree_file)
-
-    with open(tree_file_path, 'rb') as f_tree:
-        f_text = zlib.decompress(f_tree.read())
-    tail = f_text.partition(BYTE_SEP)[-1]
     
-    while tail:
-        head, _, tail = tail.partition(BYTE_SEP)
-        tre_mode, tre_name = head.split()
-        num, tail = tail[:20], tail[20:]
-        print(f"{SHIFT}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
-     
+    git_tree_show(commit_tree_name)
+
+    git_tree_show_as_tree(commit_tree_name)
+
+    
 
 
 
@@ -54,3 +86,16 @@ if ( __name__ == '__main__'):
         git_branches_show(sys.argv[1])
     else:
         git_branches_show()
+
+
+    
+
+
+
+    
+    """while tail:
+        head, _, tail = tail.partition(BYTE_SEP)
+        tre_mode, tre_name = head.split()
+        num, tail = tail[:20], tail[20:]
+        print(f"{SHIFT}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
+"""
