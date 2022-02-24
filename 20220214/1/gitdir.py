@@ -46,6 +46,44 @@ def git_tree_show(tree_name):
         print(f"{SHIFT}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
 
 
+def pass_tre_comits(commit_name):
+    commit_name_dir, commit_name_file = commit_name[:2] +'/', commit_name[2:]
+    commit_file_path = join(PATH_GIT_OBJECTS,commit_name_dir,commit_name_file)
+    
+    with open(commit_file_path, 'rb') as obj_file:
+        commit = zlib.decompress(obj_file.read()).decode()
+    
+    print(commit)
+
+    parent = commit.split("parent")
+    
+    if (len(parent) < 2):
+        print("END")
+        return
+    parent =parent[1].split('\n')[0].strip()
+    pass_tre_comits(parent)
+
+
+
+
+
+def branch_history_show(branch_name):
+    branch_path = join(PATH_GIT_BRANCHES,branch_name) 
+    if  not exists(branch_path):
+        print(f"Нет такой ветки или пути {branch_path}")
+        return
+
+    with open(branch_path) as f_branch:
+        f_text = f_branch.readline()
+    
+    commit_name = f_text.strip()
+
+    pass_tre_comits(commit_name) 
+
+    
+
+
+
 def git_branches_show (*branch_name):
     if not branch_name:
         for branch in listdir(PATHGITBRANCHES):
@@ -75,7 +113,7 @@ def git_branches_show (*branch_name):
 
     git_tree_show_as_tree(commit_tree_name)
 
-    
+    branch_history_show(branch_name[0])
 
 
 
@@ -86,16 +124,3 @@ if ( __name__ == '__main__'):
         git_branches_show(sys.argv[1])
     else:
         git_branches_show()
-
-
-    
-
-
-
-    
-    """while tail:
-        head, _, tail = tail.partition(BYTE_SEP)
-        tre_mode, tre_name = head.split()
-        num, tail = tail[:20], tail[20:]
-        print(f"{SHIFT}{tre_name.decode()} {tre_mode.decode()} {num.hex()}")
-"""
