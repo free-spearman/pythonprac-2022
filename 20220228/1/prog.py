@@ -1,9 +1,10 @@
 import textdistance as txtdist
-from multiprocessing import Pool
+from multiprocessing import Pool,context
 
 MESS = "Строка без пробела \n"
 LEVENSHTEIN = "L"
 DAMERAU_LEVENSHTEIN = "D"
+TIMEOUT = 1
 
 def dist(s1, s2, type):
 	if type == LEVENSHTEIN:
@@ -24,4 +25,8 @@ if ( __name__ == '__main__'):
 
 	process = Pool(1).apply_async(dist, (str1, str2, str3))
 
-	res = process.get()
+	try:
+		res = process.get(timeout=TIMEOUT)	
+	except context.TimeoutError:
+		print("TIMEOUT")
+		res = -1
