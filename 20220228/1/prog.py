@@ -6,10 +6,11 @@ def dist(s1, s2):
 
 
 if ( __name__ == '__main__'):
-	
+	#тут вызов
 	str1 = input(MESS).replace(" ",'')
 	str2 = input(MESS).replace(" ",'')
 
 	res = dist(str1, str2)
 
+	#Тут вывод 
 	print(res)
