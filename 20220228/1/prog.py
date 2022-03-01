@@ -1,8 +1,17 @@
 import textdistance as txtdist
 MESS = "Строка без пробела \n"
+LEVENSHTEIN = "L"
+DAMERAU_LEVENSHTEIN = "D"
 
 def dist(s1, s2, type):
-    return txtdist.levenshtein(s1, s2)
+	if type == LEVENSHTEIN:
+		return txtdist.levenshtein(s1, s2)	
+	elif type == DAMERAU_LEVENSHTEIN:
+		return txtdist.damerau_levenshtein(s1, s2)
+	else:
+		return -1
+
+    
 
 
 if ( __name__ == '__main__'):
