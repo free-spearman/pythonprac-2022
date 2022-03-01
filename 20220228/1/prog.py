@@ -9,3 +9,5 @@ if ( __name__ == '__main__'):
 	
 	str1 = input(MESS).replace(" ",'')
 	str2 = input(MESS).replace(" ",'')
+
+	res = dist(str1, str2)
