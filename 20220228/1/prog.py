@@ -18,7 +18,7 @@ def dist(s1, s2, type):
 
 
 if ( __name__ == '__main__'):
-	
+	#тут вызов
 	str1 = input(MESS).replace(" ",'')
 	str2 = input(MESS).replace(" ",'')
 	str3 = input(MESS).replace(" ",'')
@@ -31,4 +31,5 @@ if ( __name__ == '__main__'):
 		print("TIMEOUT")
 		res = -1
 
+	#Тут вывод 
 	print(res)
