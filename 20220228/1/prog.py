@@ -1,4 +1,6 @@
 import textdistance as txtdist
+from multiprocessing import Pool
+
 MESS = "Строка без пробела \n"
 LEVENSHTEIN = "L"
 DAMERAU_LEVENSHTEIN = "D"
@@ -20,4 +22,6 @@ if ( __name__ == '__main__'):
 	str2 = input(MESS).replace(" ",'')
 	str3 = input(MESS).replace(" ",'')
 
-	res = dist(str1, str2, str3)
+	process = Pool(1).apply_async(dist, (str1, str2, str3))
+
+	res = process.get()
