@@ -30,3 +30,5 @@ if ( __name__ == '__main__'):
 	except context.TimeoutError:
 		print("TIMEOUT")
 		res = -1
+
+	print(res)
