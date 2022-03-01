@@ -11,3 +11,5 @@ if ( __name__ == '__main__'):
 	str2 = input(MESS).replace(" ",'')
 
 	res = dist(str1, str2)
+
+	print(res)
