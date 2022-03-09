@@ -28,9 +28,10 @@ class GameObj:
         """ если убили - False, иначе hp"""
         self.hp = self.hp - dmg
         if self.hp < 1:
+            print(f"{self.name} dies")
             return False
-        else: 
-            return self.hp  
+        print(f"lost 10 hp, now has {self.hp} hp")        
+        return self.hp  
 
 class Monster(GameObj):
     """ Class Monster, наследник GameObj"""
