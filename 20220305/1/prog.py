@@ -48,7 +48,7 @@ class GameMap:
         print('Player at', *(self.player_coords))
         self.monsters = []
     
-    def show monsters (self):
+    def show_monsters (self):
         """ вывод всех монстров на карте """
         if not self.monsters:
             print("Добавьте монтсров пожалуйста, пока все тихо и пусто")
@@ -78,11 +78,20 @@ class GameMap:
             print (MOVE_ERROR_MESS)
             return True
         field = self.map[coords[Y_AXIS]][coords[X_AXIS]]
+        
         if not field:
-            field = [obj]
-            self.monsters.append(obj) 
+            self.monsters.append(obj)
+            self.map[coords[Y_AXIS]][coords[X_AXIS]] = [obj]
             return
+
+        flag_m = True    
+        
         for item in field:
             if item.name == obj.name:
-                field.remove(item)       
-        self.map[coords[Y_AXIS]][coords[X_AXIS]] = field.append(obj)
+                item.hp = obj.hp
+                flag_m = False
+        
+        if  flag_m:    
+            field.append(obj)
+            self.map[coords[Y_AXIS]][coords[X_AXIS]] = field 
+            self.monsters.append(obj)
