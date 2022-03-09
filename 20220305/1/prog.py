@@ -50,7 +50,7 @@ class GameMap:
         self.monsters = []
     
     def show_monsters (self):
-        """ вывод всех монстров на карте """
+        """ Вывод всех монстров на карте"""
         if not self.monsters:
             print("Добавьте монтсров пожалуйста, пока все тихо и пусто")
             return
@@ -58,14 +58,19 @@ class GameMap:
             print(m)    
     
     def check_coord_exit(axis,coord):
-        """Вышли за границу - True, иначе False"""
+        """
+        Проверка на выход за границу
+        Вышли за границу - True, иначе False
+        """
         if coord < 0 or coord > MAP_SIZE[axis] - 1:
             return True
         else:
             return False    
     
     def move(self, axis, step):
-        """Return true if everything is bad, false - moving successfully"""
+        """
+        Return true if everything is bad, false - moving successfully
+        """
         new_coord = self.player_coords[axis] + step
         if GameMap.check_coord_exit(axis ,new_coord):
             print (MOVE_ERROR_MESS)
@@ -80,7 +85,9 @@ class GameMap:
         return False
 
     def add_obj(self, coords, obj):
-        """добавляет объект на карту"""
+        """
+        добавляет объект на карту
+        """
         if GameMap.check_coord_exit(Y_AXIS,coords[Y_AXIS]) or GameMap.check_coord_exit(X_AXIS,coords[X_AXIS]):
             print (MOVE_ERROR_MESS)
             return True
@@ -110,11 +117,17 @@ class Repl(cmd.Cmd):
         super(Repl, self).__init__()
         self.map = GameMap() 
     def do_show (self,args):
+        """
+        Показать всех монстров 
+        """
         if args.strip() != 'monsters ':
             print("Error comand")
             return
         self.map.show_monsters()      
     def do_attack(self, name):
+        """
+        атакует <имя монстра> 
+        """
         name = ' '.join(shlex.split(name))
         coords = self.map.player_coords
         field = self.map.map[coords[Y_AXIS]][coords[X_AXIS]]
@@ -134,6 +147,9 @@ class Repl(cmd.Cmd):
             self.map.map[coords[Y_AXIS]][coords[X_AXIS]] = field
             self.map.monsters.remove(tgt_monster)          
     def do_add(self,args):
+        """
+        Добавляет объект (пока только монстра) на карту
+        """
         args = shlex.split(args)
         
         if len(args) < 8:
@@ -159,6 +175,9 @@ class Repl(cmd.Cmd):
         self.map.add_obj(coords, Monster(monster))
 
     def do_move(self,args):
+        """
+        Перемещает персонажа в одном из направлений: up, down, left, right 
+        """
         trend = shlex.split(args)
         if len(trend) != 1:
             print("Error comand")
@@ -178,18 +197,30 @@ class Repl(cmd.Cmd):
         return
 
     def complete_move(self, prefix, allcommand, beg, end):
+        """
+        Дает подсказки по TAB для move
+        """
         return [s for s in ('up', 'down', 'right', 'left') if s.startswith(prefix)]
 
     def complete_add(self, prefix, allcommand, beg, end):
+        """
+        Дает подсказки по TAB для add
+        """
         return [s for s in ("monster name <monster's name> hp <hp points> coords <X> <Y>", ) if s.startswith(prefix)]
 
     def complete_attack(self, prefix, allcommand, beg, end):
+        """
+        Дает подсказки по TAB для attack
+        """
         coords = self.map.player_coords
         field = self.map.map[coords[Y_AXIS]][coords[X_AXIS]]
         monsters_list = (s.name for s in field)
         return [s for s in monsters_list if s.startswith(prefix)]
 
     def complete_show(self, prefix, allcommand, beg, end):
+        """
+        Дает подсказки по TAB для show
+        """
         return [s for s in ("monsters",) if s.startswith(prefix)]
 
     def do_exit(self, arg):
