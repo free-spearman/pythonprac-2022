@@ -157,6 +157,7 @@ class Repl(cmd.Cmd):
         monster = {NAME:name,HP:hp,CRDS:coords}
         
         self.map.add_obj(coords, Monster(monster))
+
     def do_move(self,args):
         trend = shlex.split(args)
         if len(trend) != 1:
@@ -176,6 +177,27 @@ class Repl(cmd.Cmd):
             print("Error comand")
         return
 
+    def complete_move(self, prefix, allcommand, beg, end):
+        return [s for s in ('up', 'down', 'right', 'left') if s.startswith(prefix)]
+
+    def complete_add(self, prefix, allcommand, beg, end):
+        return [s for s in ("monster name <monster's name> hp <hp points> coords <X> <Y>", ) if s.startswith(prefix)]
+
+    def complete_attack(self, prefix, allcommand, beg, end):
+        coords = self.map.player_coords
+        field = self.map.map[coords[Y_AXIS]][coords[X_AXIS]]
+        monsters_list = (s.name for s in field)
+        return [s for s in monsters_list if s.startswith(prefix)]
+
+    def complete_show(self, prefix, allcommand, beg, end):
+        return [s for s in ("monsters",) if s.startswith(prefix)]
+
+    def do_exit(self, arg):
+        """
+        Exit the command line
+        """
+        print("Come back soon")
+        return True
 
 
 
