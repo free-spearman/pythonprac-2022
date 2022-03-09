@@ -14,7 +14,7 @@ NAME = 'NAME'
 
 # Блок констант
 
-
+#нужно доделать сообщения
 class GameObj:
     """ Class GameObj. Родительский класс для игровых объектов"""
     def __init__(self, args):
@@ -66,7 +66,7 @@ class GameMap:
     def move(self, axis, step):
         """Return true if everything is bad, false - moving successfully"""
         new_coord = self.player_coords[axis] + step
-        if check_cord_exit(axis ,new_coord):
+        if GameMap.check_coord_exit(axis ,new_coord):
             print (MOVE_ERROR_MESS)
             return True
         self.player_coords[axis] = new_coord
@@ -74,7 +74,7 @@ class GameMap:
 
     def add_obj(self, coords, obj):
         """добавляет объект на карту"""
-        if check_coord_exit(Y_AXIS,coords[Y_AXIS]) or check_coord_exit(X_AXIS,coords[X_AXIS]):
+        if GameMap.check_coord_exit(Y_AXIS,coords[Y_AXIS]) or GameMap.check_coord_exit(X_AXIS,coords[X_AXIS]):
             print (MOVE_ERROR_MESS)
             return True
         field = self.map[coords[Y_AXIS]][coords[X_AXIS]]
@@ -95,3 +95,58 @@ class GameMap:
             field.append(obj)
             self.map[coords[Y_AXIS]][coords[X_AXIS]] = field 
             self.monsters.append(obj)
+
+
+class Repl(cmd.Cmd):
+    prompt = '>-<'
+    def __init__(self):
+        super(Repl, self).__init__()
+        self.map = GameMap() 
+
+    def do_attack(self, name):
+        name = ' '.join(shlex.split(name))
+        coords = self.map.player_coords
+        field = self.map.map[coords[Y_AXIS]][coords[X_AXIS]]
+        if not field:
+            print(f"no {name} here")
+            return
+        tgt_monster = ''
+        for m in field:
+            if m.name == name:
+                tgt_monster = m
+        if not tgt_monster:
+            print(f"no {name} here")
+            return
+        # если смертт, то ложь
+        if not tgt_monster.take_damage(10):
+            field.remove(tgt_monster)
+            self.map.map[coords[Y_AXIS]][coords[X_AXIS]] = field
+            self.map.monsters.remove(tgt_monster)          
+    def do_add(self,args):
+        args = shlex.split(args)
+        
+        if len(args) < 8:
+            print("Error comand")
+            return
+        if args[0] != 'monster' or args[1] != 'name':
+            print("Error comand")
+            return
+        args = args[2:]
+
+        if not 'hp' in args:
+            print("Error comand")
+            return 
+        index = args.index('hp')
+        name = ' '.join(args[ :index])
+        #проверку бы
+        hp = int(args[index+1])
+        #проверку бы
+        coords = (int(args[-1]) ,int(args[-2]))
+
+        monster = {NAME:name,HP:hp,CRDS:coords}
+        
+        self.map.add_obj(coords, Monster(monster))
+
+
+
+Repl().cmdloop()        
