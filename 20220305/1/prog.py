@@ -103,7 +103,11 @@ class Repl(cmd.Cmd):
     def __init__(self):
         super(Repl, self).__init__()
         self.map = GameMap() 
-
+    def do_show (self,args):
+        if args.strip() != 'monsters ':
+            print("Error comand")
+            return
+        self.map.show_monsters()      
     def do_attack(self, name):
         name = ' '.join(shlex.split(name))
         coords = self.map.player_coords
