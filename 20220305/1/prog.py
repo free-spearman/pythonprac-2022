@@ -5,7 +5,7 @@ Y_AXIS = 0
 X_AXIS = 1
 Y_SIZE = 10
 X_SIZE = 10
-MOVE_ERROR_MESS = " Попытка выйти за границу мира"    
+MOVE_ERROR_MESS = "cannot move"    
 MAP_SIZE =[Y_SIZE,X_SIZE]
 MONSTER = 'MONSTER'
 HP = 'HP'
@@ -22,7 +22,7 @@ class GameObj:
         self.coords = args[CRDS]
         self.name = args[NAME]
     def __str__(self):
-        result = f"{self.name} at {self.coords} hp {self.hp}"
+        result = f"{self.name} at ({self.coords[X_AXIS]} {self.coords[Y_AXIS]}) hp {self.hp}"
         return result
     def take_damage(self, dmg):
         """ если убили - False, иначе hp"""
@@ -45,7 +45,7 @@ class GameMap:
     def __init__(self):
         self.map = [[False for _ in range(X_SIZE)] for _ in range(Y_SIZE)]
         print()
-        self.player_coords = (0, 0)
+        self.player_coords = [0, 0]
         print('Player at', *(self.player_coords))
         self.monsters = []
     
@@ -71,6 +71,12 @@ class GameMap:
             print (MOVE_ERROR_MESS)
             return True
         self.player_coords[axis] = new_coord
+        print(f"Player at {self.player_coords[X_AXIS]} {self.player_coords[Y_AXIS]}")
+        field = self.map[self.player_coords[Y_AXIS]][self.player_coords[X_AXIS]]
+        if not field:
+            return False
+        for m in field:
+            print(m)
         return False
 
     def add_obj(self, coords, obj):
@@ -151,6 +157,25 @@ class Repl(cmd.Cmd):
         monster = {NAME:name,HP:hp,CRDS:coords}
         
         self.map.add_obj(coords, Monster(monster))
+    def do_move(self,args):
+        trend = shlex.split(args)
+        if len(trend) != 1:
+            print("Error comand")
+            return
+        print(trend)
+        trend = trend[0]
+        if trend == 'up':
+            self.map.move(Y_AXIS,-1)
+        elif trend == 'down':
+            self.map.move(Y_AXIS,1)
+        elif trend == 'left':
+            self.map.move(X_AXIS,-1)
+        elif trend == 'right':
+            self.map.move(X_AXIS,1)
+        else:
+            print("Error comand")
+        return
+
 
 
 
