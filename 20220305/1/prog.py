@@ -73,5 +73,9 @@ class GameMap:
         field = self.map[coords[Y_AXIS]][coords[X_AXIS]]
         if not field:
             field = [obj]
+            self.monsters.append(obj) 
             return
+        for item in field:
+            if item.name == obj.name:
+                field.remove(item)       
         self.map[coords[Y_AXIS]][coords[X_AXIS]] = field.append(obj)
