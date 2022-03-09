@@ -47,7 +47,14 @@ class GameMap:
         self.player_coords = (0, 0)
         print('Player at', *(self.player_coords))
         self.monsters = []
-        
+    
+    def show monsters (self):
+        """ вывод всех монстров на карте """
+        if not self.monsters:
+            print("Добавьте монтсров пожалуйста, пока все тихо и пусто")
+            return
+        for m in self.monsters:
+            print(m)    
     
     def check_coord_exit(axis,coord):
         """Вышли за границу - True, иначе False"""
