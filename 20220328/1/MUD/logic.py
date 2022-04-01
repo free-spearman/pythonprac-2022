@@ -1,28 +1,25 @@
+"""Логика для игры и пакета MUD."""
 from .constans import HP, CRDS, NAME, MONSTER, MOVE_ERROR_MESS
 from .constans import Y_AXIS, X_AXIS, MAP_SIZE, X_SIZE, Y_SIZE
 
 
 class GameObj:
-    """
-    Родительский класс для игровых объектов
-    """
+    """Родительский класс для игровых объектов."""
+
     def __init__(self, args):
+        """Устанавливает hp, coords, name."""
         self.hp = int(args[HP])
         self.coords = args[CRDS]
         self.name = args[NAME]
 
     def __str__(self):
-        """
-        кастомная строка
-        """
+        """Кастомная строка."""
         result = f"{self.name} at ({self.coords[X_AXIS]} "\
                  f"{self.coords[Y_AXIS]}) hp {self.hp}"
         return result
 
     def take_damage(self, dmg):
-        """
-        Если убили - False, иначе hp
-        """
+        """Если убили - False, иначе hp."""
         self.hp = self.hp - dmg
         if self.hp < 1:
             print(f"{self.name} dies")
@@ -32,19 +29,19 @@ class GameObj:
 
 
 class Monster(GameObj):
-    """
-    Class Monster, наследник GameObj
-    """
+    """Class Monster, наследник GameObj."""
+
     def __init__(self, args):
+        """Устанавливает type = MONSTER."""
         super().__init__(args)
         self.type = MONSTER
 
 
 class GameMap:
-    """
-    карта
-    """
+    """Карта."""
+
     def __init__(self):
+        """Уст map, player_coords, monsters = []."""
         self.map = [[False for _ in range(X_SIZE)] for _ in range(Y_SIZE)]  # noqa: F821 E501
         print()
         self.player_coords = [0, 0]
@@ -52,7 +49,7 @@ class GameMap:
         self.monsters = []
 
     def show_monsters(self):
-        """ Вывод всех монстров на карте"""
+        """Вывод всех монстров на карте."""
         if not self.monsters:
             print("Добавьте монтсров пожалуйста, пока все тихо и пусто")
             return
@@ -61,8 +58,9 @@ class GameMap:
 
     def check_coord_exit(axis, coord):
         """
-        Проверка на выход за границу
-        Вышли за границу - True, иначе False
+        Проверка на выход за границу.
+
+        Вышли за границу - True, иначе False.
         """
         if coord < 0 or coord > MAP_SIZE[axis] - 1:
             return True
@@ -70,9 +68,7 @@ class GameMap:
             return False
 
     def move(self, axis, step):
-        """
-        Return true if everything is bad, false - moving successfully
-        """
+        """Return true if everything is bad, false - moving successfully."""
         new_coord = self.player_coords[axis] + step
         if GameMap.check_coord_exit(axis, new_coord):
             print(MOVE_ERROR_MESS)
@@ -88,12 +84,11 @@ class GameMap:
         return False
 
     def create_monster(self, monster):
+        """Интерфейс для вызова class Monster."""
         return Monster(monster)
 
     def add_obj(self, coords, obj):
-        """
-        добавляет объект на карту
-        """
+        """Добавляет объект на карту."""
         if GameMap.check_coord_exit(Y_AXIS, coords[Y_AXIS]) \
            or GameMap.check_coord_exit(X_AXIS, coords[X_AXIS]):
             print(MOVE_ERROR_MESS)

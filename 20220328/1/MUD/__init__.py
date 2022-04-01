@@ -1,5 +1,5 @@
 """
-MUD - пакет реализующий простейший multi-user dungeon
+MUD - пакет реализующий простейший multi-user dungeon.
 
 Имеется поле 10х10 клеток (по каждой оси нумерация с 0 по 9); рисовать поле и
 его наполнение - не нужно в каждой клетке может находиться 0 или более
@@ -10,7 +10,8 @@ MUD - пакет реализующий простейший multi-user dungeon
 углу поля настройка поля и игровой процесс организованы при помощи
 командной строки.
 
-:copyright: (c) 2022 by Ilya Badekin
+:copyright: (c) 2022 by Ilya Badekin.
 :license: MIT, see COPYING for more details.
 """
+
 from MUD import logic, interface, constans  # noqa: F401
