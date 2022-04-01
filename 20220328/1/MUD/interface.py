@@ -1,5 +1,6 @@
-import readline, shlex, cmd
-from .constans import *
+import shlex
+import cmd
+from MUD.constans import X_AXIS, Y_AXIS, NAME, HP, CRDS
 
 
 class Repl(cmd.Cmd):
@@ -9,29 +10,34 @@ class Repl(cmd.Cmd):
     Методы:
 
     - do_show
-    - do_attack 
+    - do_attack
     - do_add
     - do_move
     - do_exit
 
     """
-    
     prompt = '>-<'
-    
+
     def __init__(self, GameMap):
-        super(Repl, self).__init__()
-        self.map = GameMap 
-    def do_show (self,args):
         """
-        Показать всех монстров 
+        __init__, p - GameMap
+        Дополняет родителя и уст map
+        """
+        super(Repl, self).__init__()
+        self.map = GameMap
+
+    def do_show(self, args):
+        """
+        Показать всех монстров
         """
         if args.strip() != 'monsters ':
             print("Error comand")
             return
-        self.map.show_monsters()      
+        self.map.show_monsters()
+
     def do_attack(self, name):
         """
-        атакует <имя монстра> 
+        атакует <имя монстра>
         """
         name = ' '.join(shlex.split(name))
         coords = self.map.player_coords
@@ -50,13 +56,13 @@ class Repl(cmd.Cmd):
         if not tgt_monster.take_damage(10):
             field.remove(tgt_monster)
             self.map.map[coords[Y_AXIS]][coords[X_AXIS]] = field
-            self.map.monsters.remove(tgt_monster)          
-    def do_add(self,args):
+            self.map.monsters.remove(tgt_monster)
+
+    def do_add(self, args):
         """
         Добавляет объект (пока только монстра) на карту
         """
         args = shlex.split(args)
-        
         if len(args) < 8:
             print("Error comand")
             return
@@ -65,23 +71,19 @@ class Repl(cmd.Cmd):
             return
         args = args[2:]
 
-        if not 'hp' in args:
+        if 'hp' not in args:
             print("Error comand")
-            return 
+            return
         index = args.index('hp')
-        name = ' '.join(args[ :index])
-        #проверку бы
+        name = ' '.join(args[:index])
         hp = int(args[index+1])
-        #проверку бы
-        coords = (int(args[-1]) ,int(args[-2]))
+        coords = (int(args[-1]), int(args[-2]))
+        monster = {NAME: name, HP: hp, CRDS: coords}
+        self.map.add_obj(coords, self.map.create_monster(monster))
 
-        monster = {NAME:name,HP:hp,CRDS:coords}
-        
-        self.map.add_obj(coords, Monster(monster))
-
-    def do_move(self,args):
+    def do_move(self, args):
         """
-        Перемещает персонажа в одном из направлений: up, down, left, right 
+        Перемещает персонажа в одном из направлений: up, down, left, right
         """
         trend = shlex.split(args)
         if len(trend) != 1:
@@ -90,13 +92,13 @@ class Repl(cmd.Cmd):
         print(trend)
         trend = trend[0]
         if trend == 'up':
-            self.map.move(Y_AXIS,-1)
+            self.map.move(Y_AXIS, -1)
         elif trend == 'down':
-            self.map.move(Y_AXIS,1)
+            self.map.move(Y_AXIS, 1)
         elif trend == 'left':
-            self.map.move(X_AXIS,-1)
+            self.map.move(X_AXIS, -1)
         elif trend == 'right':
-            self.map.move(X_AXIS,1)
+            self.map.move(X_AXIS, 1)
         else:
             print("Error comand")
         return
@@ -105,13 +107,15 @@ class Repl(cmd.Cmd):
         """
         Дает подсказки по TAB для move
         """
-        return [s for s in ('up', 'down', 'right', 'left') if s.startswith(prefix)]
+        l_dir = ['up', 'down', 'right', 'left']
+        return [s for s in l_dir if s.startswith(prefix)]
 
     def complete_add(self, prefix, allcommand, beg, end):
         """
         Дает подсказки по TAB для add
         """
-        return [s for s in ("monster name <monster's name> hp <hp points> coords <X> <Y>", ) if s.startswith(prefix)]
+        hepl_ms = ("monster name <monster's name> hp <hp points> coords <X> <Y>", )  # noqa: E501
+        return [s for s in hepl_ms if s.startswith(prefix)]
 
     def complete_attack(self, prefix, allcommand, beg, end):
         """
@@ -134,5 +138,3 @@ class Repl(cmd.Cmd):
         """
         print("Come back soon")
         return True
-
-
