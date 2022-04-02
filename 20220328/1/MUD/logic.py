@@ -1,4 +1,10 @@
-"""Логика для игры и пакета MUD."""
+"""
+Логика для игры и пакета MUD.
+
+Есть заготовка для создания любых объектов на карте.
+Этот модуль вызывается через interface.
+"""
+
 from .constans import HP, CRDS, NAME, MONSTER, MOVE_ERROR_MESS
 from .constans import Y_AXIS, X_AXIS, MAP_SIZE, X_SIZE, Y_SIZE
 
